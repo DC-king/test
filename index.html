@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="./assets/css/reset.css">
+    <link rel="stylesheet" href="./assets/css/font.css">
+    <link rel="stylesheet" href="./assets/css/swiper.min.css">
+    <link rel="stylesheet" href="./assets/css/style.css">
+    <link rel="stylesheet" href="./assets/css/app.css">
+    <title>App</title>
+    <script>
+        var deviceWidth = document.documentElement.clientWidth;
+        if (deviceWidth > 750) deviceWidth = 750;
+        document.documentElement.style.fontSize = deviceWidth / 7.5 + 'px';
+    </script>
+</head>
+
+<body>
+    <header class="header">
+        <span class="lnr lnr-chevron-left"></span>
+        <h2 class="header-title">文具。。</h2>
+    </header>
+    <section class="main">
+        <nav id="wrapper">
+            <div id="scroller">
+                <ul class="nav_list">
+                    <li class="nav_list_select">铅笔</li>
+                    <li>自来水笔</li>
+                    <li>钢笔</li>
+                    <li>铅笔</li>
+                    <li>圆珠笔</li>
+                    <li>铅笔</li>
+                    <li>自来水笔</li>
+                    <li>钢笔</li>
+                    <li>铅笔</li>
+                    <li>圆珠笔</li>
+                </ul>
+            </div>
+
+        </nav>
+        </div>
+        <div class="body_box"> </div>
+    </section>
+    <script src="./assets/js/jquery-1.11.3.min.js"></script>
+    <script src="./assets/js/iscroll.js"></script>
+    <script>
+        var now_index = 0;
+
+        var myScroll;
+
+
+        myScroll = new IScroll('#wrapper', {
+            scrollX: true,
+            scrollY: false,
+            mouseWheel: true,
+            click: true
+        });
+
+        for (var t = 0; t < $(".nav_list").children().length; t++) {
+            $($(".nav_list").children()[t]).attr("index", t + 1);
+        }
+        $(".nav_list").on("click", "li", function() {
+            $(this).siblings().removeClass("nav_list_select");
+            myScroll.scrollToElement(this);
+            $(this).addClass("nav_list_select");
+            now_index = $(this).index();
+
+            function getData() {
+                $.ajax({
+                    url: "http://192.168.2.123/mobile-demo/server/list.php",
+                    type: "GET",
+                    data: {
+                        id: now_index
+                    },
+                    dataType: "json"
+
+                }).done(function(data) {
+                    var j = {};
+                    j = data.info;
+                    putInInner(j);
+                });
+            }
+            getData();
+
+            function putInInner(j) {
+                var str = "<ul>"
+                for (var y = 0; y < j.length; y++) {
+                    var strArr = [
+                        '<li>',
+                        '<a href="#">',
+                        '<div class="back_ground"></div>',
+                        '<div class="goods_list">',
+                        '<div class="name">' + j[y].title + '</div>',
+                        '<div class="value">' + j[y].price + '</div>',
+                        '</div>',
+                        '</a>',
+                        '</li> '
+                    ];
+                    str = str + strArr.join('');
+                }
+                str = str + "</ul>"
+                $(".body_box").html(str);
+            }
+
+
+        })
+
+        // $(".nav_list").on("click", function() {
+
+        // })
+    </script>
+    <!-- <footer class="footer"></footer> -->
+
+    <!-- <script src="./assets/js/swiper.min.js"></script> -->
+    <!-- <script>
+        var swiper = new Swiper('.swiper-container', {
+            pagination: {
+                el: '.swiper-pagination'
+            },
+            loop: true
+        });
+    </script> -->
+</body>
+
+</html>
